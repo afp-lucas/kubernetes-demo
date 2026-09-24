@@ -1,0 +1,28 @@
+body {
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input,
+textarea,
+button {
+    padding: 10px;
+}
+
+textarea {
+    min-height: 150px;
+}
+
+article {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 15px;
+}

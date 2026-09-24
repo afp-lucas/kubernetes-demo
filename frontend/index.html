@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Essay Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main>
+        <h1>Essay Manager</h1>
+
+        <section>
+            <h2>Cadastrar redação</h2>
+
+            <form id="essay-form">
+                <input
+                    id="title"
+                    type="text"
+                    placeholder="Título"
+                    required
+                >
+
+                <textarea
+                    id="text"
+                    placeholder="Texto da redação"
+                    required
+                ></textarea>
+
+                <input
+                    id="score"
+                    type="number"
+                    min="0"
+                    max="1000"
+                    placeholder="Nota"
+                >
+
+                <button type="submit">
+                    Cadastrar
+                </button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Redações cadastradas</h2>
+
+            <button id="refresh">
+                Atualizar
+            </button>
+
+            <div id="essays"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+services:
+
+  postgres:
+    image: postgres:16
+
+    environment:
+      POSTGRES_DB: essays
+      POSTGRES_USER: essay_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+
+    secrets:
+      - db_password
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - essay_net
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U essay_user -d essays"
+        ]
+
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  backend:
+    build:
+      context: ./backend
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: essays
+      DB_USER: essay_user
+      DB_PASSWORD_FILE: /run/secrets/db_password
+
+    secrets:
+      - db_password
+
+    depends_on:
+      postgres:
+        condition: service_healthy # para garantir que o processo do banco ja esta inicializado
+
+    networks:
+      - essay_net
+
+
+  frontend:
+    build:
+      context: ./frontend
+
+    ports:
+      - "8080:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - essay_net
+
+
+volumes:
+
+  postgres_data:
+
+
+networks:
+
+  essay_net:
+
+
+secrets:
+
+  db_password:
+    file: ./secrets/db_password.txt

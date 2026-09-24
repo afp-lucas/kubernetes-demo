@@ -1,0 +1,12 @@
+minecraftServer:
+  eula: "TRUE"
+  difficulty: easy
+  gameMode: survival
+  maxPlayers: 10
+  motd: "Servidor Minecraft - Projeto Kubernetes v2"
+  memory: 1024M
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m

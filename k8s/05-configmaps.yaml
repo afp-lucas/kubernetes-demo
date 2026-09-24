@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: backend-config
+  namespace: essay-manager
+
+data:
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_NAME: essays
+  DB_USER: essay_user
+  DB_PASSWORD_FILE: /etc/essay-secrets/db-password
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: postgres-config
+  namespace: essay-manager
+  
+data:
+  POSTGRES_DB: essays
+  POSTGRES_USER: essay_user
+  POSTGRES_PASSWORD_FILE: /etc/essay-secrets/db-password

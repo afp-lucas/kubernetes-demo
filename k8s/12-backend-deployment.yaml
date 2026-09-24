@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: backend
+  namespace: essay-manager
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z postgres 5432; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+
+      containers:
+        - name: backend
+          image: essay-backend:3.0
+
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8000
+
+          envFrom:
+            - configMapRef:
+                name: backend-config
+
+          volumeMounts:
+            - name: database-secret
+              mountPath: /etc/essay-secrets
+              readOnly: true
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+
+            initialDelaySeconds: 3
+            periodSeconds: 5
+
+      volumes:
+        - name: database-secret
+          secret:
+            secretName: database-secret
+
+            items:
+              - key: db-password
+                path: db-password

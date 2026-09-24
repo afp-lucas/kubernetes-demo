@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: postgres
+  namespace: essay-manager
+
+spec:
+  serviceName: postgres-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          volumeMounts:
+            - name: database-secret
+              mountPath: /etc/essay-secrets
+              readOnly: true
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - essay_user
+                - -d
+                - essays
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: database-secret
+          secret:
+            secretName: database-secret
+            items:
+              - key: db-password
+                path: db-password
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: essay-postgres-pvc
